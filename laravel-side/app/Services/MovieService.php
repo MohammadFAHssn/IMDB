@@ -6,6 +6,6 @@ class MovieService
 {
     public function getAll()
     {
-        return 1;
+        return ['result' => 'success'];
     }
 }

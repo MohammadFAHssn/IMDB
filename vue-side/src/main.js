@@ -8,6 +8,12 @@ import router from './router'
 
 import axios from 'axios'
 
+import { AgGridVue } from 'ag-grid-vue3'
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule])
+
 const app = createApp(App)
 
 app.config.globalProperties.$axios = axios.create({
@@ -19,5 +25,7 @@ app.config.globalProperties.$axios = axios.create({
 
 app.use(createPinia())
 app.use(router)
+
+app.component('AgGridVue', AgGridVue)
 
 app.mount('#app')

@@ -1,6 +1,6 @@
 <template>
   <section class="movies-sec">
-    <button class="sync-btn">Sync with IMDB</button>
+    <button class="sync-btn" @click="onSyncClick">Sync with IMDB</button>
 
     <section class="ag-grid-sec">
       <ag-grid-vue style="width: 100%; height: 100%" :rowData="rowData" :columnDefs="colDefs">
@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -22,8 +24,8 @@ export default {
 
   methods: {
     getAllMovies() {
-      this.$axios
-        .get('movie/getAll')
+      axios
+        .get('http://127.0.0.1:8000/api/movie/getAll')
         .then(({ data }) => {
           this.movies = data
           this.setRowData()
@@ -57,6 +59,39 @@ export default {
         { field: 'aggregateRating' },
         { field: 'voteCount' },
       ]
+    },
+
+    onSyncClick() {
+      axios
+        .post(
+          'https://caching.graphql.imdb.com/',
+          {
+            operationName: 'AdvancedTitleSearch',
+            variables: {
+              explicitContentConstraint: { explicitContentFilter: 'INCLUDE_ADULT' },
+              first: 50,
+              locale: 'en-US',
+              sortBy: 'USER_RATING_COUNT',
+              sortOrder: 'DESC',
+              userRatingsConstraint: { aggregateRatingRange: { max: 10, min: 6.9 } },
+            },
+            extensions: {
+              persistedQuery: {
+                sha256Hash: '6842af47c3f1c43431ae23d394f3aa05ab840146b146a2666d4aa0dc346dc482',
+                version: 1,
+              },
+            },
+          },
+          {
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          },
+        )
+        .then((response) => {
+          console.log('Success:', response.data)
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     },
   },
 

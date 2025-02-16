@@ -17,4 +17,9 @@ class MovieService
     {
         return $this->movieRepository->getAll();
     }
+
+    public function syncWithIMDB($data)
+    {
+        return $data;
+    }
 }

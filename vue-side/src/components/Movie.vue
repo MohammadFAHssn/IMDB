@@ -69,7 +69,7 @@ export default {
             operationName: 'AdvancedTitleSearch',
             variables: {
               explicitContentConstraint: { explicitContentFilter: 'INCLUDE_ADULT' },
-              first: 50,
+              first: 10,
               locale: 'en-US',
               sortBy: 'USER_RATING_COUNT',
               sortOrder: 'DESC',
@@ -86,12 +86,34 @@ export default {
             headers: { 'Content-Type': 'application/json; charset=utf-8' },
           },
         )
-        .then((response) => {
-          console.log('Success:', response.data)
+        .then(({ data }) => {
+          let IMDB_movies = data.data.advancedTitleSearch.edges.map((edge) => {
+            return {
+              IMDB_id: edge.node.title.id,
+              title: edge.node.title.titleText.text,
+              type: edge.node.title.titleType.text,
+              primary_image_url: edge.node.title.primaryImage.url,
+              release_year: edge.node.title.releaseYear.year,
+              end_year: edge.node.title.releaseYear.endYear,
+              aggregate_rating: edge.node.title.ratingsSummary.aggregateRating,
+              vote_count: edge.node.title.ratingsSummary.voteCount,
+            }
+          })
+
+          this.syncWithIMDB(IMDB_movies)
         })
         .catch((error) => {
           console.error('Error:', error)
         })
+    },
+
+    syncWithIMDB(IMDB_movies) {
+      axios
+        .post('http://127.0.0.1:8000/api/movie/syncWithIMDB', {
+          IMDB_movies: IMDB_movies,
+        })
+        .then(() => {})
+        .catch(() => {})
     },
   },
 

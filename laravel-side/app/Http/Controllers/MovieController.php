@@ -25,4 +25,14 @@ class MovieController extends Controller
         }
         return response()->json($result);
     }
+
+    public function syncWithIMDB(Request $request)
+    {
+        try {
+            $result = $this->movieService->syncWithIMDB($request);
+        } catch (Exception $e) {
+            $result = $e;
+        }
+        return response()->json($result);
+    }
 }

@@ -112,7 +112,9 @@ export default {
         .post('http://127.0.0.1:8000/api/movie/syncWithIMDB', {
           IMDB_movies: IMDB_movies,
         })
-        .then(() => {})
+        .then(() => {
+          this.getAllMovies()
+        })
         .catch(() => {})
     },
   },

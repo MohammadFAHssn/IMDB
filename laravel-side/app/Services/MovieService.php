@@ -20,6 +20,8 @@ class MovieService
 
     public function syncWithIMDB($data)
     {
-        return $data;
+        $IMDB_movies = $data['IMDB_movies'];
+
+        return $this->movieRepository->syncWithIMDB($IMDB_movies);
     }
 }

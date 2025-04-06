@@ -1,7 +1,7 @@
 <template>
   <section class="movies-sec">
     <div class="include-rated-movies">
-      <input type="checkbox" id="include-rated-movies-input" />
+      <input type="checkbox" id="include-rated-movies-input" v-model="includeRatedMovies" />
       <label for="include-rated-movies-input" class="include-rated-movies-label"
         >include rated movies</label
       >
@@ -26,6 +26,8 @@ export default {
 
       rowData: [],
       colDefs: [],
+
+      includeRatedMovies: false,
     }
   },
 
@@ -126,12 +128,46 @@ export default {
         })
         .catch(() => {})
     },
+
+    getRatedMovies() {
+      const url = 'https://api.graphql.imdb.com/'
+
+      const payload = {
+        operationName: 'RatingsPage',
+        variables: {
+          filter: {
+            explicitContentConstraint: { explicitContentFilter: 'INCLUDE_ADULT' },
+            singleUserRatingConstraint: { filterType: 'INCLUDE', userId: 'ur115987309' },
+          },
+          first: 250,
+          locale: 'en-US',
+          sort: { sortBy: 'SINGLE_USER_RATING', sortOrder: 'ASC' },
+        },
+        extensions: {
+          persistedQuery: {
+            sha256Hash: 'ea7ae0e0a38ad80bbef9e7a88c999ae9402100a7f54b153a3ddfa30b18a6dfb7',
+            version: 1,
+          },
+        },
+      }
+
+      axios
+        .post(url, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch(() => {})
+    },
   },
 
   created() {
     this.setColDefs()
-
     this.getAllMovies()
+    this.getRatedMovies()
   },
 }
 </script>

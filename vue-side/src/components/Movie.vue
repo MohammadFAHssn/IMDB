@@ -1,5 +1,12 @@
 <template>
   <section class="movies-sec">
+    <div class="include-rated-movies">
+      <input type="checkbox" id="include-rated-movies-input" />
+      <label for="include-rated-movies-input" class="include-rated-movies-label"
+        >include rated movies</label
+      >
+    </div>
+
     <button class="sync-btn" @click="onSyncClick">Sync with IMDB</button>
 
     <section class="ag-grid-sec">
@@ -139,7 +146,7 @@ export default {
 
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
 
   row-gap: 1em;
 }
@@ -154,5 +161,19 @@ export default {
   justify-self: start;
 
   cursor: pointer;
+}
+
+.include-rated-movies {
+  display: flex;
+  align-items: center;
+}
+
+#include-rated-movies-input {
+  width: 1em;
+  height: 1em;
+}
+
+.include-rated-movies-label {
+  margin-left: 0.3em;
 }
 </style>

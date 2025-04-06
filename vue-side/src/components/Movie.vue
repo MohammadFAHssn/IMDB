@@ -44,6 +44,7 @@ export default {
           endYear: movie.end_year,
           aggregateRating: movie.aggregate_rating,
           voteCount: movie.vote_count,
+          myRating: Math.round(movie.vote_count * movie.aggregate_rating),
         }
       })
     },
@@ -58,6 +59,7 @@ export default {
         { field: 'endYear' },
         { field: 'aggregateRating' },
         { field: 'voteCount' },
+        { field: 'myRating' },
       ]
     },
 

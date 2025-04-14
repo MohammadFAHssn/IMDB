@@ -28,6 +28,7 @@ export default {
       colDefs: [],
 
       includeRatedMovies: false,
+      ratedMovies: [],
     }
   },
 
@@ -43,19 +44,21 @@ export default {
     },
 
     setRowData() {
-      this.rowData = this.movies.map((movie) => {
-        return {
-          IMDB_id: movie.IMDB_id,
-          title: movie.title,
-          type: movie.type,
-          primaryImageUrl: movie.primary_image_url,
-          releaseYear: movie.release_year,
-          endYear: movie.end_year,
-          aggregateRating: movie.aggregate_rating,
-          voteCount: movie.vote_count,
-          myRating: Math.round(movie.vote_count * movie.aggregate_rating),
-        }
-      })
+      this.rowData = this.movies
+        .filter((movie) => this.includeRatedMovies || !this.ratedMovies.includes(movie.IMDB_id))
+        .map((movie) => {
+          return {
+            IMDB_id: movie.IMDB_id,
+            title: movie.title,
+            type: movie.type,
+            primaryImageUrl: movie.primary_image_url,
+            releaseYear: movie.release_year,
+            endYear: movie.end_year,
+            aggregateRating: movie.aggregate_rating,
+            voteCount: movie.vote_count,
+            myRating: Math.round(movie.vote_count * movie.aggregate_rating),
+          }
+        })
     },
 
     setColDefs() {
@@ -80,7 +83,7 @@ export default {
             operationName: 'AdvancedTitleSearch',
             variables: {
               explicitContentConstraint: { explicitContentFilter: 'INCLUDE_ADULT' },
-              first: 10,
+              first: 1000,
               locale: 'en-US',
               sortBy: 'USER_RATING_COUNT',
               sortOrder: 'DESC',
@@ -145,7 +148,7 @@ export default {
         },
         extensions: {
           persistedQuery: {
-            sha256Hash: 'ea7ae0e0a38ad80bbef9e7a88c999ae9402100a7f54b153a3ddfa30b18a6dfb7',
+            sha256Hash: '90e077634ebba07351579909fe00a18052873cdd278133cb5f0bc2a6efd25a6d',
             version: 1,
           },
         },
@@ -158,7 +161,11 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data)
+          this.ratedMovies = response.data.data.advancedTitleSearch.edges.map(
+            (edge) => edge.node.title.id,
+          )
+
+          this.getAllMovies()
         })
         .catch(() => {})
     },
@@ -166,8 +173,13 @@ export default {
 
   created() {
     this.setColDefs()
-    this.getAllMovies()
     this.getRatedMovies()
+  },
+
+  watch: {
+    includeRatedMovies() {
+      this.setRowData()
+    },
   },
 }
 </script>

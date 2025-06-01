@@ -11,11 +11,13 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "ag-grid-vue3": "^33.1.0",
     "axios": "^1.7.9",
     "pinia": "^2.3.1",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "ag-grid-vue3": "~33.3.1",
+    "ag-grid-enterprise": "~33.3.1",
+    "ag-charts-enterprise": "~11.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

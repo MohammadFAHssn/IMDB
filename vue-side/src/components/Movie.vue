@@ -10,8 +10,14 @@
     <button class="sync-btn" @click="onSyncClick">Sync with IMDB</button>
 
     <section class="ag-grid-sec">
-      <ag-grid-vue style="width: 100%; height: 100%" :rowData="rowData" :columnDefs="colDefs">
-      </ag-grid-vue>
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :default-col-def="defaultColDef"
+        :row-numbers="true"
+        :pagination="true"
+      />
     </section>
   </section>
 </template>
@@ -20,10 +26,15 @@
 import axios from 'axios'
 import { ref, onMounted, watch } from 'vue'
 
+import { AgGridVue } from 'ag-grid-vue3'
+
 const movies = ref([])
 
 const rowData = ref([])
-const colDefs = ref([])
+
+const defaultColDef = {
+  filter: true,
+}
 
 const includeRatedMovies = ref(false)
 const ratedMovies = ref([])
@@ -74,19 +85,17 @@ const setRowData = () => {
     })
 }
 
-const setColDefs = () => {
-  colDefs.value = [
-    { field: 'IMDB_id' },
-    { field: 'title' },
-    { field: 'type' },
-    { field: 'primaryImageUrl' },
-    { field: 'releaseYear' },
-    { field: 'endYear' },
-    { field: 'aggregateRating' },
-    { field: 'voteCount' },
-    { field: 'myRating' },
-  ]
-}
+const columnDefs = ref([
+  { field: 'IMDB_id' },
+  { field: 'title' },
+  { field: 'type' },
+  { field: 'primaryImageUrl' },
+  { field: 'releaseYear' },
+  { field: 'endYear' },
+  { field: 'aggregateRating' },
+  { field: 'voteCount' },
+  { field: 'myRating' },
+])
 
 const onSyncClick = async () => {
   await Promise.all([getMoviesFromIMDB(), getRatedMovies()])
@@ -187,7 +196,6 @@ const getRatedMovies = () => {
 
 onMounted(() => {
   getAllMovies()
-  setColDefs()
 })
 
 watch(includeRatedMovies, () => {
